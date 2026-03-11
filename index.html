@@ -1,32 +1,1022 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <style>
-      body {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        min-height: 50vh;
-      }
-    </style>
-  </head>
-  <body>
-    <form id="form">
-      <label for="name">Name</label>
-      <input type="text" name="name" id="name" placeholder="John Doe" />
-      <label for="email">Email</label>
-      <input
-        type="email"
-        name="email"
-        id="email"
-        placeholder="johndoe@gmail.com"
-      />
-      <button type="submit">Submit</button>
-    </form>
-    <script src="index.js"></script>
-  </body>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Weekly Learning Timetable — Prince Debrah Bessah Sam</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+/* ═══════════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════════ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg:           #0a0a0f;
+  --bg-2:         #0f0f18;
+  --bg-3:         #13131f;
+  --surface:      rgba(255,255,255,0.04);
+  --surface-2:    rgba(255,255,255,0.07);
+  --border:       rgba(255,255,255,0.07);
+  --border-2:     rgba(255,255,255,0.13);
+  --text:         #f0f0f5;
+  --text-2:       #8888a8;
+  --text-3:       #4a4a66;
+  --accent:       #7c3aed;
+  --accent-light: #a78bfa;
+  --accent-glow:  rgba(124,58,237,0.2);
+
+  /* subject colours */
+  --react:    #1e3a5f;
+  --react-t:  #7eb8f7;
+  --python:   #1a3d2e;
+  --python-t: #6ee7b7;
+  --owasp:    #3d2e0a;
+  --owasp-t:  #fcd34d;
+  --aws:      #2d1a4a;
+  --aws-t:    #c4b5fd;
+  --project:  #3d1a1a;
+  --project-t:#fca5a5;
+  --reading:  #0f2a3d;
+  --reading-t:#7dd3fc;
+  --class:    #2d2200;
+  --class-t:  #fbbf24;
+  --rest:     #111118;
+  --rest-t:   #555570;
+  --gym:      #0f2d1a;
+  --gym-t:    #86efac;
+
+  --font-display: 'Syne', sans-serif;
+  --font-mono:    'DM Mono', monospace;
+  --transition:   0.2s cubic-bezier(0.4,0,0.2,1);
+  --radius:       8px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-mono);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 99px; }
+
+/* ═══════════════════════════════════════════════
+   HEADER
+═══════════════════════════════════════════════ */
+.page-header {
+  padding: 56px 40px 40px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-2);
+  position: relative;
+  overflow: hidden;
+}
+.page-header::before {
+  content: '';
+  position: absolute;
+  top: -120px; left: -120px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(124,58,237,0.12), transparent 70%);
+  pointer-events: none;
+}
+.header-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent-light);
+  margin-bottom: 14px;
+}
+.header-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--text);
+  line-height: 1.1;
+  margin-bottom: 12px;
+}
+.header-title span { color: var(--accent-light); }
+.header-sub {
+  font-size: 0.82rem;
+  color: var(--text-2);
+  line-height: 1.7;
+  max-width: 600px;
+}
+.header-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+.meta-pill {
+  padding: 5px 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
+  border-radius: 99px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--text-2);
+  letter-spacing: 0.06em;
+}
+
+/* ═══════════════════════════════════════════════
+   NAV TABS
+═══════════════════════════════════════════════ */
+.tabs {
+  display: flex;
+  gap: 4px;
+  padding: 16px 40px;
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+}
+.tab {
+  padding: 8px 20px;
+  border-radius: 99px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-2);
+  background: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+.tab:hover { color: var(--text); border-color: var(--border-2); }
+.tab.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+
+/* ═══════════════════════════════════════════════
+   MAIN LAYOUT
+═══════════════════════════════════════════════ */
+.main { padding: 32px 40px 80px; }
+
+.section { display: none; }
+.section.active { display: block; }
+
+/* ═══════════════════════════════════════════════
+   LEGEND
+═══════════════════════════════════════════════ */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  cursor: default;
+  transition: var(--transition);
+}
+.legend-item:hover { transform: translateY(-1px); border-color: var(--border-2); }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+/* ═══════════════════════════════════════════════
+   TIMETABLE
+═══════════════════════════════════════════════ */
+.table-wrapper {
+  overflow-x: auto;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+.timetable {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+}
+.timetable th {
+  background: var(--bg-3);
+  padding: 12px 14px;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-2);
+  text-align: left;
+  border-bottom: 1px solid var(--border-2);
+  white-space: nowrap;
+}
+.timetable th.today {
+  color: var(--accent-light);
+  background: rgba(124,58,237,0.08);
+}
+.timetable td {
+  padding: 0;
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  vertical-align: top;
+}
+.timetable td:last-child { border-right: none; }
+.timetable tr:last-child td { border-bottom: none; }
+
+.cell-inner {
+  padding: 9px 12px;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  min-height: 44px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.time-cell {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--accent-light);
+  background: rgba(124,58,237,0.06);
+  white-space: nowrap;
+  border-right: 2px solid rgba(124,58,237,0.3) !important;
+  min-width: 90px;
+}
+
+/* subject cell styles */
+.cell-react    { background: var(--react);   color: var(--react-t); }
+.cell-python   { background: var(--python);  color: var(--python-t); }
+.cell-owasp    { background: var(--owasp);   color: var(--owasp-t); }
+.cell-aws      { background: var(--aws);     color: var(--aws-t); }
+.cell-project  { background: var(--project); color: var(--project-t); }
+.cell-reading  { background: var(--reading); color: var(--reading-t); }
+.cell-class    { background: var(--class);   color: var(--class-t); font-weight: 600; }
+.cell-rest     { background: var(--rest);    color: var(--rest-t); }
+.cell-gym      { background: var(--gym);     color: var(--gym-t); }
+
+.timetable tr:hover td:not(.today-col) .cell-inner {
+  filter: brightness(1.15);
+}
+
+/* today column highlight */
+.today-col .cell-inner {
+  border-left: 2px solid rgba(124,58,237,0.5);
+}
+
+/* ═══════════════════════════════════════════════
+   STATS BAR
+═══════════════════════════════════════════════ */
+.stats-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  transition: var(--transition);
+}
+.stat-card:hover { border-color: var(--border-2); background: var(--surface-2); }
+.stat-num {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--accent-light);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.stat-label { font-size: 0.72rem; color: var(--text-2); letter-spacing: 0.06em; }
+
+/* ═══════════════════════════════════════════════
+   NOTES / RULES PAGE
+═══════════════════════════════════════════════ */
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 20px;
+}
+.notes-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  transition: var(--transition);
+}
+.notes-card:hover { border-color: var(--border-2); }
+.notes-card-title {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 16px;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.notes-card-title .card-icon {
+  width: 28px; height: 28px;
+  background: rgba(124,58,237,0.15);
+  border: 1px solid rgba(124,58,237,0.3);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: var(--accent-light);
+  flex-shrink: 0;
+}
+.notes-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.notes-list li {
+  font-size: 0.82rem;
+  color: var(--text-2);
+  line-height: 1.6;
+  padding-left: 16px;
+  position: relative;
+}
+.notes-list li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--accent-light);
+  font-size: 0.7rem;
+}
+
+.subject-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 14px;
+  border-left: 3px solid var(--accent);
+  transition: var(--transition);
+}
+.subject-block:hover { border-color: var(--border-2); border-left-color: var(--accent-light); }
+.subject-block h4 {
+  font-family: var(--font-display);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+.subject-block p {
+  font-size: 0.8rem;
+  color: var(--text-2);
+  line-height: 1.7;
+}
+
+.resources-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+}
+.resource-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  transition: var(--transition);
+  text-decoration: none;
+}
+.resource-item:hover {
+  border-color: var(--accent);
+  background: var(--surface-2);
+  transform: translateY(-2px);
+}
+.resource-icon {
+  width: 32px; height: 32px;
+  background: rgba(124,58,237,0.15);
+  border: 1px solid rgba(124,58,237,0.25);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+.resource-name {
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+.resource-desc { font-size: 0.73rem; color: var(--text-2); line-height: 1.5; }
+
+/* section sub-title */
+.section-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent-light);
+  margin-bottom: 6px;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  margin-bottom: 24px;
+}
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 36px 0;
+}
+
+/* quote */
+.quote-block {
+  border-left: 3px solid var(--accent);
+  padding: 20px 24px;
+  background: var(--surface);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  margin-top: 32px;
+}
+.quote-block p {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.65;
+  font-style: italic;
+  letter-spacing: -0.01em;
+}
+
+/* ═══════════════════════════════════════════════
+   PROGRESS TRACKER
+═══════════════════════════════════════════════ */
+.tracker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+.tracker-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+  transition: var(--transition);
+}
+.tracker-card:hover { border-color: var(--border-2); }
+.tracker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.tracker-subject {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.tracker-pct {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--accent-light);
+}
+.progress-bar {
+  height: 4px;
+  background: var(--border);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 1s cubic-bezier(0.4,0,0.2,1);
+  width: 0;
+}
+.tracker-note {
+  font-size: 0.72rem;
+  color: var(--text-3);
+  line-height: 1.5;
+}
+.tracker-input {
+  width: 100%;
+  background: var(--bg-3);
+  border: 1px solid var(--border-2);
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  margin-top: 10px;
+  outline: none;
+  transition: var(--transition);
+}
+.tracker-input:focus { border-color: var(--accent); }
+.tracker-input::placeholder { color: var(--text-3); }
+
+.save-btn {
+  margin-top: 20px;
+  padding: 10px 24px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 99px;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+.save-btn:hover { background: var(--accent-light); color: var(--bg); transform: translateY(-1px); }
+
+.weekly-review {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  margin-top: 28px;
+}
+.weekly-review h3 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 20px;
+  letter-spacing: -0.02em;
+}
+.review-question {
+  margin-bottom: 18px;
+}
+.review-question label {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-2);
+  margin-bottom: 6px;
+  letter-spacing: 0.03em;
+}
+.review-textarea {
+  width: 100%;
+  background: var(--bg-3);
+  border: 1px solid var(--border-2);
+  border-radius: 6px;
+  padding: 10px 14px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.6;
+  resize: vertical;
+  min-height: 64px;
+  outline: none;
+  transition: var(--transition);
+}
+.review-textarea:focus { border-color: var(--accent); }
+.review-textarea::placeholder { color: var(--text-3); }
+
+.toast {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  background: var(--accent);
+  color: #fff;
+  padding: 10px 22px;
+  border-radius: 99px;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 600;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: 0.25s ease;
+  z-index: 999;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .page-header { padding: 36px 20px 28px; }
+  .tabs { padding: 12px 20px; }
+  .main { padding: 24px 20px 60px; }
+  .stats-bar { grid-template-columns: repeat(2, 1fr); }
+  .notes-grid { grid-template-columns: 1fr; }
+  .resources-grid { grid-template-columns: 1fr; }
+  .tracker-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header class="page-header">
+  <p class="header-label">Learning System · 2025</p>
+  <h1 class="header-title">Weekly<br><span>Timetable</span></h1>
+  <p class="header-sub">Prince Debrah Bessah Sam · Level 200 IT Student · 6:00am – 12:00am daily</p>
+  <div class="header-meta">
+    <span class="meta-pill">React — FreeCodeCamp</span>
+    <span class="meta-pill">Python — Bro Code</span>
+    <span class="meta-pill">OWASP / Security</span>
+    <span class="meta-pill">AWS Cloud</span>
+    <span class="meta-pill">Projects</span>
+  </div>
+</header>
+
+<!-- ═══════════ TABS ═══════════ -->
+<nav class="tabs" id="tabs">
+  <button class="tab active" data-tab="schedule">Schedule</button>
+  <button class="tab" data-tab="notes">Notes & Rules</button>
+  <button class="tab" data-tab="tracker">Progress Tracker</button>
+  <button class="tab" data-tab="resources">Resources</button>
+</nav>
+
+<!-- ═══════════ MAIN ═══════════ -->
+<main class="main">
+
+  <!-- ── SCHEDULE TAB ── -->
+  <div class="section active" id="tab-schedule">
+
+    <div class="stats-bar" id="statsBar"></div>
+
+    <div class="legend" id="legend"></div>
+
+    <div class="table-wrapper">
+      <table class="timetable" id="timetable">
+        <thead id="tableHead"></thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── NOTES TAB ── -->
+  <div class="section" id="tab-notes">
+    <p class="section-label">Operating Instructions</p>
+    <h2 class="section-title">How to Use This Timetable</h2>
+
+    <div class="notes-grid">
+      <div class="notes-card">
+        <div class="notes-card-title"><div class="card-icon">01</div> The Golden Rules</div>
+        <ul class="notes-list">
+          <li>Never skip two days of the same subject back to back. Consistency beats intensity.</li>
+          <li>When university assignments come up, use Tuesday and Wednesday afternoon blocks first — those are your most flexible deep work hours.</li>
+          <li>Gym is non-negotiable. A tired, unfit mind learns slower. Keep the Saturday blocks.</li>
+          <li>The 6:00–7:00 morning block on free days is your edge. Most people are still asleep. Use it.</li>
+          <li>Tech reading is not passive — take notes. One article a day from OWASP Blog, AWS What's New, or The Pragmatic Engineer.</li>
+        </ul>
+      </div>
+      <div class="notes-card">
+        <div class="notes-card-title"><div class="card-icon">02</div> Weekly Review — Every Sunday</div>
+        <ul class="notes-list">
+          <li>What did you complete this week versus what you planned?</li>
+          <li>Which subject got skipped the most — and why?</li>
+          <li>What is one thing you built or wrote this week?</li>
+          <li>What do you want to finish by this time next week?</li>
+          <li>Write the answers down. Even three sentences. This habit compounds over a year in ways that are hard to overstate.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <p class="section-label">The Stack</p>
+    <h2 class="section-title">What You're Learning and Why</h2>
+
+    <div class="subject-block">
+      <h4>React — FreeCodeCamp</h4>
+      <p>You already know vanilla JS and you have built real projects. React is the next layer. Do not just watch — build alongside the video. Every concept you watch should be coded by hand in a separate file before you move on.</p>
+    </div>
+    <div class="subject-block">
+      <h4>Python — Bro Code</h4>
+      <p>Python is the language of AI/ML, automation, and backend scripting. You are 2 hours in. Keep the momentum. When you finish Bro Code, start building small tools — a file organiser, a web scraper, a simple API. That is what makes it stick.</p>
+    </div>
+    <div class="subject-block">
+      <h4>OWASP / Secure Coding</h4>
+      <p>Start with the OWASP Top 10 at owasp.org — it is free. Read one vulnerability per session: what it is, how it is exploited, and how to prevent it. Then go into your own web projects and find where you have the same vulnerability. This is how developers who think like security engineers are built.</p>
+    </div>
+    <div class="subject-block">
+      <h4>AWS Cloud Fundamentals</h4>
+      <p>Start with AWS Cloud Practitioner Essentials on AWS Skill Builder — it is free. Understand the concepts first: what is a VPC, what is IAM, what is S3, how does EC2 work. The certification follows naturally after the understanding.</p>
+    </div>
+    <div class="subject-block">
+      <h4>Projects / Build Time</h4>
+      <p>This is where learning becomes skill. Do not let project time become tutorial time. Build things. Break things. Fix them. Your portfolio is what gets you in rooms before your degree does. Luna Commerce is already proof of that — keep building at that level.</p>
+    </div>
+
+    <div class="quote-block">
+      <p>"The people at the top did not get there by waiting for the right time. They got there by starting before they were ready and staying consistent when it stopped being exciting."</p>
+    </div>
+  </div>
+
+  <!-- ── TRACKER TAB ── -->
+  <div class="section" id="tab-tracker">
+    <p class="section-label">LocalStorage Powered</p>
+    <h2 class="section-title">Progress Tracker</h2>
+
+    <div class="tracker-grid" id="trackerGrid"></div>
+
+    <div class="weekly-review">
+      <h3>Sunday Review</h3>
+      <div class="review-question">
+        <label>What did you complete this week vs what you planned?</label>
+        <textarea class="review-textarea" id="review1" placeholder="Write honestly..."></textarea>
+      </div>
+      <div class="review-question">
+        <label>Which subject got skipped the most — and why?</label>
+        <textarea class="review-textarea" id="review2" placeholder="Be specific..."></textarea>
+      </div>
+      <div class="review-question">
+        <label>What is one thing you built or wrote this week?</label>
+        <textarea class="review-textarea" id="review3" placeholder="Even something small counts..."></textarea>
+      </div>
+      <div class="review-question">
+        <label>What do you want to finish by this time next week?</label>
+        <textarea class="review-textarea" id="review4" placeholder="Set a concrete goal..."></textarea>
+      </div>
+      <button class="save-btn" id="saveReview">Save Review</button>
+    </div>
+  </div>
+
+  <!-- ── RESOURCES TAB ── -->
+  <div class="section" id="tab-resources">
+    <p class="section-label">Bookmark These</p>
+    <h2 class="section-title">Essential Resources</h2>
+    <div class="resources-grid" id="resourcesGrid"></div>
+  </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<!-- ═══════════════════════════════════════════════
+   JAVASCRIPT
+═══════════════════════════════════════════════ -->
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────
+
+const DAYS = ["Time", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const CLASS_DAYS = [1, 4, 5]; // Monday, Thursday, Friday (0-indexed from Time)
+
+const SCHEDULE = [
+  ["6:00–7:00",   "Wake / prep",              "Wake / React (1hr)",          "Wake / React (1hr)",          "Wake / prep",               "Wake / prep",               "Wake / React (1hr)",         "REST"],
+  ["7:00–9:00",   "CLASS",                    "Python Bro Code (2hrs)",      "Python Bro Code (2hrs)",      "CLASS",                     "CLASS",                     "Python Bro Code (2hrs)",     "Tech Reading (1hr)"],
+  ["9:00–11:00",  "CLASS",                    "React FCC (2hrs)",            "OWASP / Security (2hrs)",     "CLASS",                     "CLASS",                     "AWS Cloud (2hrs)",           "Project Build (2hrs)"],
+  ["11:00–12:00", "CLASS",                    "Break / Lunch",               "Break / Lunch",               "CLASS",                     "CLASS",                     "Break / Lunch",              "Project Build (1hr)"],
+  ["12:00–13:00", "CLASS",                    "Tech Articles / Reading",     "AWS Cloud (1hr)",             "Break / Lunch",             "Break / Lunch",             "Gym (1hr)",                  "Lunch / Break"],
+  ["13:00–14:00", "Break / Lunch",            "OWASP / Security (1hr)",      "Project Build (1hr)",         "OWASP / Security (1hr)",    "React FCC (1hr)",           "Gym (1hr)",                  "Weekly Review (1hr)"],
+  ["14:00–16:00", "React FCC (2hrs)",         "Project Build (2hrs)",        "Project Build (2hrs)",        "CLASS",                     "CLASS",                     "Project Build (2hrs)",       "REST / Relax"],
+  ["16:00–17:00", "CLASS",                    "Python Bro Code (1hr)",       "Python Bro Code (1hr)",       "CLASS",                     "CLASS",                     "Tech Articles / Reading",    "REST / Relax"],
+  ["17:00–18:00", "Python Bro Code (1hr)",    "AWS Cloud (1hr)",             "AWS Cloud (1hr)",             "CLASS",                     "CLASS",                     "AWS Cloud (1hr)",            "REST / Relax"],
+  ["18:00–19:00", "OWASP / Security (1hr)",   "React FCC (1hr)",             "React FCC (1hr)",             "CLASS",                     "CLASS",                     "React FCC (1hr)",            "REST / Relax"],
+  ["19:00–20:00", "Project Build (1hr)",      "Project Build (1hr)",         "OWASP / Security (1hr)",      "Python Bro Code (1hr)",     "Python Bro Code (1hr)",     "Weekly Review",              "Prep for Monday"],
+  ["20:00–21:00", "Tech Articles / Reading",  "Tech Articles / Reading",     "Tech Articles / Reading",     "React FCC (1hr)",           "React FCC (1hr)",           "Relax / Social",             "Prep for Monday"],
+  ["21:00–22:00", "Review / Wind down",       "Review / Wind down",          "Review / Wind down",          "OWASP / Security (1hr)",    "Project Build (1hr)",       "Relax / Social",             "Review / Wind down"],
+  ["22:00–24:00", "Sleep prep",               "Sleep prep",                  "Sleep prep",                  "Review / Wind down",        "Review / Wind down",        "Sleep prep",                 "Sleep prep"],
+];
+
+const LEGEND_ITEMS = [
+  { key: "react",   label: "React — FCC",       color: "#7eb8f7" },
+  { key: "python",  label: "Python — Bro Code", color: "#6ee7b7" },
+  { key: "owasp",   label: "OWASP / Security",  color: "#fcd34d" },
+  { key: "aws",     label: "AWS / Cloud",        color: "#c4b5fd" },
+  { key: "project", label: "Projects / Build",   color: "#fca5a5" },
+  { key: "reading", label: "Tech Reading",       color: "#7dd3fc" },
+  { key: "class",   label: "University Class",   color: "#fbbf24" },
+  { key: "gym",     label: "Gym",                color: "#86efac" },
+  { key: "rest",    label: "Rest / Recovery",    color: "#555570" },
+];
+
+const SUBJECTS = [
+  { id: "react",   name: "React (FCC)",       color: "#7eb8f7", fill: "#3b82f6", totalHrs: 15, note: "FreeCodeCamp full React course" },
+  { id: "python",  name: "Python (Bro Code)", color: "#6ee7b7", fill: "#10b981", totalHrs: 12, note: "Bro Code Python course — 2hrs in" },
+  { id: "owasp",   name: "OWASP / Security",  color: "#fcd34d", fill: "#f59e0b", totalHrs: 20, note: "OWASP Top 10 + secure coding practice" },
+  { id: "aws",     name: "AWS Cloud",          color: "#c4b5fd", fill: "#8b5cf6", totalHrs: 20, note: "Cloud Practitioner Essentials" },
+  { id: "project", name: "Projects / Build",  color: "#fca5a5", fill: "#ef4444", totalHrs: 0,  note: "Ongoing — no fixed endpoint" },
+];
+
+const RESOURCES = [
+  { icon: "🔐", name: "OWASP Top 10", url: "https://owasp.org/www-project-top-ten/", desc: "The definitive web security vulnerability list. Start here for security." },
+  { icon: "☁️", name: "AWS Skill Builder", url: "https://skillbuilder.aws/", desc: "Free Cloud Practitioner Essentials course. Start before the cert." },
+  { icon: "⚛️", name: "FreeCodeCamp", url: "https://www.freecodecamp.org/", desc: "React track — you are already here. Keep going." },
+  { icon: "🗺️", name: "roadmap.sh", url: "https://roadmap.sh/", desc: "Visual learning paths for frontend, backend, DevOps, and cybersecurity." },
+  { icon: "📰", name: "The Pragmatic Engineer", url: "https://www.pragmaticengineer.com/", desc: "Real industry insight from a senior engineer. Weekly reading." },
+  { icon: "🎓", name: "CS50 Harvard", url: "https://cs50.harvard.edu/", desc: "Free. The cybersecurity and AI lectures are worth your time." },
+  { icon: "🐍", name: "Python Bro Code", url: "https://www.youtube.com/@BroCodez", desc: "Your current Python resource. 2hrs in — 10hrs to go." },
+  { icon: "📖", name: "MDN Web Docs", url: "https://developer.mozilla.org/", desc: "The authoritative reference for HTML, CSS, and JavaScript." },
+];
+
+// ── HELPERS ───────────────────────────────────────────────────────────────
+
+function getCellClass(text) {
+  if (text === "CLASS") return "cell-class";
+  const t = text.toLowerCase();
+  if (t.includes("react")) return "cell-react";
+  if (t.includes("python")) return "cell-python";
+  if (t.includes("owasp") || t.includes("security")) return "cell-owasp";
+  if (t.includes("aws") || t.includes("cloud")) return "cell-aws";
+  if (t.includes("project") || t.includes("build")) return "cell-project";
+  if (t.includes("reading") || t.includes("articles") || t.includes("review") || t.includes("tech ")) return "cell-reading";
+  if (t.includes("gym")) return "cell-gym";
+  return "cell-rest";
+}
+
+function getTodayColIndex() {
+  const day = new Date().getDay(); // 0=Sun,1=Mon,...6=Sat
+  // DAYS array: Time=0, Mon=1, Tue=2, Wed=3, Thu=4, Fri=5, Sat=6, Sun=7
+  const map = { 0: 7, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6 };
+  return map[day];
+}
+
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2500);
+}
+
+// ── RENDER: LEGEND ────────────────────────────────────────────────────────
+
+function renderLegend() {
+  const el = document.getElementById("legend");
+  el.innerHTML = LEGEND_ITEMS.map(item => `
+    <div class="legend-item">
+      <div class="legend-dot" style="background:${item.color}"></div>
+      <span style="color:${item.color}; font-size:0.72rem;">${item.label}</span>
+    </div>
+  `).join("");
+}
+
+// ── RENDER: STATS BAR ─────────────────────────────────────────────────────
+
+function renderStats() {
+  const progress = JSON.parse(localStorage.getItem("timetable_progress")) || {};
+  let totalStudyHrs = 0;
+  SCHEDULE.forEach(row => {
+    row.slice(1).forEach(cell => {
+      const match = cell.match(/\((\d+)hr/);
+      if (match) totalStudyHrs += parseInt(match[1]);
+    });
+  });
+
+  const stats = [
+    { num: "18", label: "Study hrs / week" },
+    { num: "5",  label: "Subjects active" },
+    { num: "6",  label: "Days learning" },
+    { num: Object.values(progress).reduce((a, b) => a + (b.hoursLogged || 0), 0) + "h", label: "Hours logged" },
+  ];
+
+  document.getElementById("statsBar").innerHTML = stats.map(s => `
+    <div class="stat-card">
+      <div class="stat-num">${s.num}</div>
+      <div class="stat-label">${s.label}</div>
+    </div>
+  `).join("");
+}
+
+// ── RENDER: TIMETABLE ─────────────────────────────────────────────────────
+
+function renderTable() {
+  const todayCol = getTodayColIndex();
+  const head = document.getElementById("tableHead");
+  const body = document.getElementById("tableBody");
+
+  // Header row
+  head.innerHTML = `<tr>${DAYS.map((d, i) => {
+    const isToday = i === todayCol;
+    return `<th class="${isToday ? "today" : ""}">${d}${isToday ? " ◆" : ""}</th>`;
+  }).join("")}</tr>`;
+
+  // Body rows
+  body.innerHTML = SCHEDULE.map(row => {
+    const [time, ...cells] = row;
+    return `<tr>
+      <td><div class="cell-inner time-cell">${time}</div></td>
+      ${cells.map((text, i) => {
+        const colIdx = i + 1;
+        const cls = getCellClass(text);
+        const isToday = colIdx === todayCol;
+        return `<td class="${isToday ? "today-col" : ""}">
+          <div class="cell-inner ${cls}">${text}</div>
+        </td>`;
+      }).join("")}
+    </tr>`;
+  }).join("");
+}
+
+// ── RENDER: TRACKER ───────────────────────────────────────────────────────
+
+function renderTracker() {
+  const progress = JSON.parse(localStorage.getItem("timetable_progress")) || {};
+
+  document.getElementById("trackerGrid").innerHTML = SUBJECTS.map(subj => {
+    const saved = progress[subj.id] || { hoursLogged: 0, note: "" };
+    const pct = subj.totalHrs > 0
+      ? Math.min(100, Math.round((saved.hoursLogged / subj.totalHrs) * 100))
+      : 0;
+    return `
+      <div class="tracker-card">
+        <div class="tracker-header">
+          <span class="tracker-subject">${subj.name}</span>
+          <span class="tracker-pct" id="pct-${subj.id}">${subj.totalHrs > 0 ? pct + "%" : "Ongoing"}</span>
+        </div>
+        ${subj.totalHrs > 0 ? `
+        <div class="progress-bar">
+          <div class="progress-fill" id="fill-${subj.id}" style="background:${subj.fill}; width:${pct}%"></div>
+        </div>` : ""}
+        <div class="tracker-note">${subj.note}</div>
+        <input type="number" class="tracker-input" id="hrs-${subj.id}"
+          placeholder="Hours logged so far..."
+          value="${saved.hoursLogged || ""}"
+          min="0" max="999" />
+        <input type="text" class="tracker-input" id="note-${subj.id}"
+          placeholder="What did you work on last?"
+          value="${saved.note || ""}"
+          style="margin-top:6px;" />
+      </div>
+    `;
+  }).join("");
+
+  // Load review answers
+  const reviews = JSON.parse(localStorage.getItem("timetable_reviews")) || {};
+  ["review1","review2","review3","review4"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el && reviews[id]) el.value = reviews[id];
+  });
+}
+
+// ── RENDER: RESOURCES ─────────────────────────────────────────────────────
+
+function renderResources() {
+  document.getElementById("resourcesGrid").innerHTML = RESOURCES.map(r => `
+    <a class="resource-item" href="${r.url}" target="_blank" rel="noopener">
+      <div class="resource-icon">${r.icon}</div>
+      <div>
+        <div class="resource-name">${r.name}</div>
+        <div class="resource-desc">${r.desc}</div>
+      </div>
+    </a>
+  `).join("");
+}
+
+// ── SAVE TRACKER ──────────────────────────────────────────────────────────
+
+function saveTracker() {
+  const progress = {};
+  SUBJECTS.forEach(subj => {
+    const hrs = parseFloat(document.getElementById("hrs-" + subj.id).value) || 0;
+    const note = document.getElementById("note-" + subj.id).value.trim();
+    progress[subj.id] = { hoursLogged: hrs, note };
+  });
+  localStorage.setItem("timetable_progress", JSON.stringify(progress));
+
+  const reviews = {};
+  ["review1","review2","review3","review4"].forEach(id => {
+    reviews[id] = document.getElementById(id).value;
+  });
+  localStorage.setItem("timetable_reviews", JSON.stringify(reviews));
+
+  showToast("Progress saved ✓");
+  renderStats(); // refresh the stat card
+}
+
+// ── TABS ──────────────────────────────────────────────────────────────────
+
+document.getElementById("tabs").addEventListener("click", e => {
+  const btn = e.target.closest(".tab");
+  if (!btn) return;
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+  btn.classList.add("active");
+  document.getElementById("tab-" + btn.dataset.tab).classList.add("active");
+});
+
+// ── SAVE BUTTON ───────────────────────────────────────────────────────────
+
+document.getElementById("saveReview").addEventListener("click", saveTracker);
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+
+function init() {
+  renderLegend();
+  renderStats();
+  renderTable();
+  renderTracker();
+  renderResources();
+}
+
+document.addEventListener("DOMContentLoaded", init);
+</script>
+</body>
 </html>
